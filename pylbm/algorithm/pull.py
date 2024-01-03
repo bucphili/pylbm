@@ -6,7 +6,6 @@
 
 from .base import BaseAlgorithm
 
-
 class PullAlgorithm(BaseAlgorithm):
     def one_time_step_local(self, f, fnew, m):
         """
