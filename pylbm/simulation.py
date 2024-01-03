@@ -418,3 +418,4 @@ class Simulation:
 
         self.t += self.dt
         self.nt += 1
+
