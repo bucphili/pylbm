@@ -846,11 +846,18 @@ class LENeumann2D(BoundaryMethod):
         symb_coord.pop()
         #symbolic forcing terms and function handles
         if simulation.scheme._source_terms[0] is not None: 
-            g_x_sym = simulation.scheme._source_terms[0][consm[0]]
-            g_y_sym = simulation.scheme._source_terms[0][consm[1]]
-            import sympy as sp
-            g_x_f = sp.lambdify(symb_coord,g_x_sym.evalf(subs=simulation.scheme.param))
-            g_y_f = sp.lambdify(symb_coord,g_y_sym.evalf(subs=simulation.scheme.param))
+            if isinstance(simulation.scheme._source_terms[0][consm[0]], (float, int)):
+                def g_x_f(x,y): return simulation.scheme._source_terms[0][consm[0]]*np.ones(x.shape)
+            else:
+                g_x_sym = simulation.scheme._source_terms[0][consm[0]]
+                import sympy as sp
+                g_x_f = sp.lambdify(symb_coord,g_x_sym.evalf(subs=simulation.scheme.param))
+            if isinstance(simulation.scheme._source_terms[0][consm[1]], (float, int)):
+                def g_y_f(x,y): return simulation.scheme._source_terms[0][consm[1]]*np.ones(x.shape)
+            else:
+                g_y_sym = simulation.scheme._source_terms[0][consm[1]]
+                import sympy as sp
+                g_y_f = sp.lambdify(symb_coord,g_y_sym.evalf(subs=simulation.scheme.param))
         else:
             #dummy functions if no source term is given 
             def g_x_f(x,y): return 0.*x*y 
